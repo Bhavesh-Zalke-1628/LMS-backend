@@ -22,7 +22,8 @@ const getRazorpayKey = async (req, res, next) => {
 
 
 const buySubscription = async (req, res, next) => {
-    console.log('hello')
+
+    console.log("hello world");
     const { id } = req.user
     try {
         const user = await User.findById(id);
