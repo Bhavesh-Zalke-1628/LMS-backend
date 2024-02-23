@@ -1,3 +1,4 @@
+import User from "../models/userModel.js";
 import Apperror from "../utils/erorUtils.js";
 import jwt from 'jsonwebtoken'
 const isLoggedIn = async (req, res, next) => {
@@ -7,9 +8,8 @@ const isLoggedIn = async (req, res, next) => {
     }
 
     const userDetails = await jwt.verify(token, process.env.SECRET)
-
-
     req.user = userDetails
+    console.log(req.user)
     next()
 }
 
@@ -24,10 +24,11 @@ const authorisedRoles = (...roles) => async (req, res, next) => {
 
 
 const authorisedSubscriber = async (req, res, next) => {
-    const subscription = req.user.subscriptions
-    const currentRole = req.user.role
-
-    if (currentRole !== 'Admin' && subscription.status !== 'active') {
+    console.log(req.user)
+    const user = await User.findById(req.user.id)
+    console.log(user)
+    console.log('authorisedSubscriber user >', user)
+    if (user.role == 'User' || user.subscription.status == 'active') {
         return next(
             new Apperror('Plase subscribe to access this cource ', 400)
         );

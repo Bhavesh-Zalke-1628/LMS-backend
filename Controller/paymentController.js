@@ -44,11 +44,15 @@ const buySubscription = async (req, res, next) => {
             total_count: 10
         })
 
+        console.log(subscription)
         user.subscription.id = subscription.id
         user.subscription.status = subscription.status
-        console.log(user.subscription.id)
+
+
+        console.log(user.subscription.status)
         await user.save()
-        console.log(user)
+
+
         res.status(200).json({
             success: true,
             msg: "Subscribed successfully",
@@ -64,7 +68,7 @@ const buySubscription = async (req, res, next) => {
 const verifySbscription = async (req, res, next) => {
     const { id } = req.user;
     const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body
-    // console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
+    console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {
         const user = await User.findById(id)
         console.log(razorpay_payment_id)
@@ -88,15 +92,18 @@ const verifySbscription = async (req, res, next) => {
         // }
         await Payment.create({
             razorpay_payment_id,
-            razorpay_signature: generatedSignature,
-            razorpay_subscription_id: subscription_id
+            razorpay_signature,
+            razorpay_subscription_id
         })
 
         user.subscription.status = 'active'
-        await user.save()
+        console.log(user)
+        const u = await user.save()
+        console.log(u   )
         res.status(200).json({
             success: true,
-            msg: "Payment verified successfully"
+            msg: "Payment verified successfully",
+            user
         })
     } catch (error) {
         return next(
@@ -107,7 +114,6 @@ const verifySbscription = async (req, res, next) => {
 const cancleSubscription = async (req, res, next) => {
     const { id } = req.user
     const user = User.findById(id)
-    
     console.log(id)
     try {
 

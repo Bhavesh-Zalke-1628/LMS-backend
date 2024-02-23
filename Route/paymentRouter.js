@@ -27,6 +27,8 @@ router
     .route('/unsubscribe')
     .post(
         isLoggedIn,
+        authorisedSubscriber,
+        isLoggedIn,
         cancleSubscription
     )
 
