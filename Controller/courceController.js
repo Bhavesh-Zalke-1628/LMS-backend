@@ -32,7 +32,8 @@ const getLectureByCourceId = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "Cources fetched successfully",
-            lectures: Cource.lectures
+            lectures: Cource.lectures,
+            cource
         });
     } catch (error) {
 
@@ -122,7 +123,7 @@ const removeCource = async (req, res, next) => {
         const { id } = req.params;
         const cource = await Cource.findById(id);
         if (!cource) {
-            return next(new AppError("Cource with given id does not exist", 404))
+            return next(new Apperror("Cource with given id does not exist", 404))
         }
 
         await cource.deleteOne();
@@ -131,7 +132,7 @@ const removeCource = async (req, res, next) => {
             msg: "Cource  deleted sucessfully",
         })
     } catch (error) {
-        return next(new AppError(error, 500))
+        return next(new Apperror(error, 500))
     }
 }
 
@@ -139,13 +140,14 @@ const addLectureToCourceById = async (req, res, next) => {
     const { title, description } = req.body;
     const { id } = req.params;
     try {
+        console.log(title,description)
         if (!title || !description) {
-            return next(new AppError("Please provide title and description", 400))
+            return next(new Apperror("Please provide title and description", 400))
         }
         const cource = await Cource.findById(id);
 
         if (!cource) {
-            return next(new AppError("Cource with given id does not exist", 404))
+            return next(new Apperror("Cource with given id does not exist", 404))
         }
 
         const lectureData = {
@@ -177,10 +179,10 @@ const addLectureToCourceById = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "Lecture added successfully",
-            lectureDataF
+            lectureData
         })
     } catch (error) {
-        return next(new AppError(error, 500))
+        return next(new Apperror(error, 500))
     }
 
 

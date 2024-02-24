@@ -98,8 +98,7 @@ const verifySbscription = async (req, res, next) => {
 
         user.subscription.status = 'active'
         console.log(user)
-        const u = await user.save()
-        console.log(u   )
+        await user.save()
         res.status(200).json({
             success: true,
             msg: "Payment verified successfully",
