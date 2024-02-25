@@ -34,7 +34,7 @@ router.route('/:id')
     .post(
         isLoggedIn,
         authorisedRoles('Admin'),
-        upload.single('thumbnails'),
+        upload.single('lecture'),
         addLectureToCourceById,
     )
 export default router;

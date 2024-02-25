@@ -1,6 +1,5 @@
 // import the packages
 import express from 'express'
-import { model } from 'mongoose';
 const app = express();
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
@@ -11,7 +10,6 @@ import authRouter from './Route/authRouter.js'
 import courceRouter from './Route/courceRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
 import errorMiddleWare from './middleware/errorMiddleWare.js';
-
 
 // parsing the data is present in the database
 app.use(express.json());

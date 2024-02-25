@@ -8,7 +8,7 @@ import Cource from '../models/courceModel.js'
 import Apperror from '../utils/erorUtils.js'
 const getAllCources = async (req, res, next) => {
     try {
-        const cources = await Cource.find({}).select('-lectures');
+        const cources = await Cource.find({}).select('-lectures')
 
         res.status(200).json({
             success: true,
@@ -159,6 +159,7 @@ const addLectureToCourceById = async (req, res, next) => {
         if (req.file) {
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "lecture",
+                resource_type : 'video'
             })
             if (result) {
                 lectureData.lecture.public_id = result.public_id;
