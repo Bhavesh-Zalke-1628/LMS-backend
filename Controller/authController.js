@@ -41,7 +41,6 @@ const register = async (req, res, next) => {
         if (!user) {
             return next(new Apperror("User registration Failed", 400))
         }
-
         // Upload the avatar Image
 
         if (req.file) {

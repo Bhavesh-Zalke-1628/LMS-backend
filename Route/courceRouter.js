@@ -4,14 +4,14 @@ const router = Router();
 
 
 // import the controller
-import { getAllCources, getLectureByCourceId, createCource, updateCource, removeCource, addLectureToCourceById } from '../Controller/courceController.js'
+import { getAllCources, getLectureByCourceId, createCource, updateCource, removeCource, addLectureToCourceById, addComment } from '../Controller/courceController.js'
 import upload from '../middleware/multerMiddle.js'
 import { authorisedRoles, isLoggedIn } from "../middleware/authMiddleWare.js";
 
 
 router.route('/')
     .get(getAllCources)
-    .post( 
+    .post(
         isLoggedIn,
         upload.single('thumbnails'),
         createCource
@@ -37,6 +37,9 @@ router.route('/:id')
         upload.single('lecture'),
         addLectureToCourceById,
     )
+
+router.route('/:courceId/comment/:lectureId')
+    .post(addComment)
 export default router;
 
 

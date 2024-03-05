@@ -8,7 +8,7 @@ import Cource from '../models/courceModel.js'
 import Apperror from '../utils/erorUtils.js'
 const getAllCources = async (req, res, next) => {
     try {
-        const cources = await Cource.find({}).select('-lectures')
+        const cources = await Cource.find({})
 
         res.status(200).json({
             success: true,
@@ -139,14 +139,15 @@ const removeCource = async (req, res, next) => {
 const addLectureToCourceById = async (req, res, next) => {
     const { title, description } = req.body;
     const { id } = req.params;
+    console.log(title, description)
     console.log(id)
     try {
-        console.log(title, description)
         if (!title || !description) {
             return next(new Apperror("Please provide title and description", 400))
         }
         const cource = await Cource.findById(id);
 
+        console.log(cource)
         if (!cource) {
             return next(new Apperror("Cource with given id does not exist", 404))
         }
@@ -155,25 +156,30 @@ const addLectureToCourceById = async (req, res, next) => {
             title,
             description,
             lecture: {
-                public_id: "sample id",
+                public_id: "public id",
                 secure_url: "sample id"
             }
         }
+
+        // if (req.file) {
         console.log(req.file)
-
-        if (req.file) {
-            const result = await cloudnary.v2.uploader.upload(req.file.path, {
-                folder: "lecture",
-                resource_type: 'auto'
-            })
-            if (result) {
-                lectureData.lecture.public_id = result.public_id;
-                lectureData.lecture.secure_url = result.secure_url;
-            }
-
-            //remvove the file from local server
+        // try {
+        const result = await cloudnary.v2.uploader.upload(req.file, {
+            folder: "Lecture data",
+            resource_type: 'video',
+            chunk_size: "600000"
+        })
+        console.log(result)
+        if (result) {
+            lectureData.lecture.public_id = result.public_id
+            lectureData.lecture.secure_url = result.secure_url
+            // remove the file from the local server 
             fs.rm(`uploads/${req.file.filename}`)
         }
+        // } catch (error) {
+        //     return next(new Apperror("Image upload failed" || error, 500))
+        // }
+        // }
 
         //added lecture it is 
         cource.lectures.push(lectureData);
@@ -191,11 +197,40 @@ const addLectureToCourceById = async (req, res, next) => {
         return next(new Apperror(error, 500))
     }
 }
+
+
+const addComment = async (req, res, next) => {
+    // console.log('hello')
+    const { comment } = req.body
+    const { lectureId, courceId } = req.params
+
+    try {
+        console.log(comment)
+        console.log(lectureId, courceId)
+        const cource = await Cource.findById(courceId);
+        console.log(cource)
+        if (!cource) {
+            return next(new Apperror("Cource with given id does not exist", 404))
+        }
+        res.status(200).json({
+            success: true,
+            msg: "Comment add successfully",
+            com: comment
+        })
+    } catch (error) {
+        return next(
+            new Apperror(
+                error, 400
+            )
+        )
+    }
+}
 export {
     getAllCources,
     getLectureByCourceId,
     createCource,
     updateCource,
     removeCource,
-    addLectureToCourceById
+    addLectureToCourceById,
+    addComment
 }
