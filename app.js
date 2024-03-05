@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import authRouter from './Route/authRouter.js'
 import courceRouter from './Route/courceRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
-import errorMiddleWare from './middleware/errorMiddleWare.js';
+// import errorMiddleWare from './middleware/errorMiddleWare.js';
 
 // parsing the data is present in the database
 app.use(express.json());
@@ -57,5 +57,5 @@ app.all('*', (req, res, next) => {
 })
 
 
-app.use(errorMiddleWare);
+// app.use(errorMiddleWare);
 export default app;

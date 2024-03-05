@@ -1,13 +1,10 @@
 
-const errorMiddleWare = (err, req, res, next) => {
-    err.status = err.status || 500;
-    err.message = err.message || "Something went wronge";
+// const errorMiddleWare = (err, req, res, next) => {
+//     return res.status(err.status).json({
+//         success: false,
+//         message: err.message,
+//         stack: err.stack
+//     })
+// }
 
-    return res.status(err.status).json({
-        success: false,
-        message: err.message,
-        stack: err.stack
-    })
-}
-
-export default errorMiddleWare;
+// export default errorMiddleWare;

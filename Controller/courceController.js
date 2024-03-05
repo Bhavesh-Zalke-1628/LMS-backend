@@ -139,8 +139,9 @@ const removeCource = async (req, res, next) => {
 const addLectureToCourceById = async (req, res, next) => {
     const { title, description } = req.body;
     const { id } = req.params;
+    console.log(id)
     try {
-        console.log(title,description)
+        console.log(title, description)
         if (!title || !description) {
             return next(new Apperror("Please provide title and description", 400))
         }
@@ -153,13 +154,17 @@ const addLectureToCourceById = async (req, res, next) => {
         const lectureData = {
             title,
             description,
-            lecture: {}
+            lecture: {
+                public_id: "sample id",
+                secure_url: "sample id"
+            }
         }
+        console.log(req.file)
 
         if (req.file) {
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "lecture",
-                resource_type : 'video'
+                resource_type: 'auto'
             })
             if (result) {
                 lectureData.lecture.public_id = result.public_id;
@@ -185,8 +190,6 @@ const addLectureToCourceById = async (req, res, next) => {
     } catch (error) {
         return next(new Apperror(error, 500))
     }
-
-
 }
 export {
     getAllCources,

@@ -96,6 +96,7 @@ const verifySbscription = async (req, res, next) => {
             razorpay_subscription_id
         })
 
+
         user.subscription.status = 'active'
         console.log(user)
         await user.save()
@@ -140,8 +141,10 @@ const cancleSubscription = async (req, res, next) => {
 }
 const allPayment = async (req, res, next) => {
     try {
+        console.log('hello')
         const { count } = req.query
 
+        console.log(count)
         const payments = await razorpay.subscriptions.all({
             count: count || 10
         })
@@ -149,7 +152,7 @@ const allPayment = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "All payments",
-            payments
+            data: payments.items
         })
     } catch (error) {
         return next(

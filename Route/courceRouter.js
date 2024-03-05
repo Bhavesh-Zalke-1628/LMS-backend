@@ -28,12 +28,12 @@ router.route('/:id')
     )
     .delete(
         isLoggedIn,
-        authorisedRoles('Admin'),
+        // authorisedRoles('Admin'),
         removeCource
     )
     .post(
         isLoggedIn,
-        authorisedRoles('Admin'),
+        // authorisedRoles('Admin'),
         upload.single('lecture'),
         addLectureToCourceById,
     )

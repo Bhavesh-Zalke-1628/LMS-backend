@@ -36,9 +36,10 @@ router
     .route('/')
     .get(
         isLoggedIn,
-        authorisedRoles('Admin'),
+        // authorisedRoles('Admin'),
         authorisedSubscriber,
-        allPayment)
+        allPayment
+    )
 
 
 export default router
