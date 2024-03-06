@@ -42,9 +42,12 @@ const courceSchema = new Schema({
                     required: true
                 }
             },
-            comment: {
-                type: String
-            }
+            comments: [
+                {
+                    studentId: String,
+                    comment: String
+                }
+            ]
         }
     ],
     numberOfLecture: {

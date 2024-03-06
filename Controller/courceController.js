@@ -25,6 +25,7 @@ const getLectureByCourceId = async (req, res, next) => {
 
         const { id } = req.params;
         const cource = await Cource.findById(id);
+        console.log(id)
 
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
@@ -32,7 +33,7 @@ const getLectureByCourceId = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "Cources fetched successfully",
-            lectures: Cource.lectures,
+            lectures: cource.lectures,
             cource
         });
     } catch (error) {
@@ -57,14 +58,11 @@ const createCource = async (req, res, next) => {
                 secure_url: "sample url"
             }
         })
-
-
         if (!cource) {
             return next(
                 new Apperror("Cource Couldn't be created", 401)
             )
         }
-
         if (req.file) {
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "Cources",
@@ -73,11 +71,9 @@ const createCource = async (req, res, next) => {
                 cource.thumbnails.public_id = result.public_id;
                 cource.thumbnails.secure_url = result.secure_url;
             }
-
             //remvove the file from local server
             fs.rm(`uploads/${req.file.filename}`)
         }
-
         await cource.save();
         res.status(200).json({
             success: true,
@@ -88,7 +84,6 @@ const createCource = async (req, res, next) => {
         console.log(error)
         return next(new Apperror(error, 500))
     }
-
 }
 
 const updateCource = async (req, res, next) => {
@@ -202,27 +197,44 @@ const addLectureToCourceById = async (req, res, next) => {
 const addComment = async (req, res, next) => {
     // console.log('hello')
     const { comment } = req.body
-    const { lectureId, courceId } = req.params
-
+    console.log('comment', comment)
     try {
+        const { id, lectureId } = req.params;
+        const cource = await Cource.findById(id);
+        console.log(id)
         console.log(comment)
-        console.log(lectureId, courceId)
-        const cource = await Cource.findById(courceId);
-        console.log(cource)
         if (!cource) {
-            return next(new Apperror("Cource with given id does not exist", 404))
+            return next(new Apperror("Cource not found", 404))
         }
+        console.log(id)
+        console.log(cource?.lectures)
+        const lecture = cource?.lectures;
+        console.log('lecture', lecture)
+
+
+        const data = lecture.filter(ele => {
+            return ele._id == lectureId
+        })
+
+        console.log('data', data)
+        const x = {
+            studentId: "hello",
+            comment: comment
+        }
+        data[0].comments.push(x)
+
+        console.log("After push the comment", data)
+        cource.save()
         res.status(200).json({
             success: true,
             msg: "Comment add successfully",
-            com: comment
+            cource
         })
     } catch (error) {
-        return next(
-            new Apperror(
-                error, 400
-            )
-        )
+        res.status(400).json({
+            success: false,
+            msg: error.message
+        })
     }
 }
 export {
