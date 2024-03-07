@@ -6,6 +6,7 @@ import fs from 'fs/promises'
 // import the files
 import Cource from '../models/courceModel.js'
 import Apperror from '../utils/erorUtils.js'
+import User from '../models/userModel.js'
 const getAllCources = async (req, res, next) => {
     try {
         const cources = await Cource.find({})
@@ -197,33 +198,34 @@ const addLectureToCourceById = async (req, res, next) => {
 const addComment = async (req, res, next) => {
     // console.log('hello')
     const { comment } = req.body
-    console.log('comment', comment)
+    const name = req.user.name
     try {
+
+        console.log(name)
         const { id, lectureId } = req.params;
         const cource = await Cource.findById(id);
-        console.log(id)
-        console.log(comment)
+
+        // const student = await User.findById(userId)
+
+        // console.log('student', student)
+
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
         }
-        console.log(id)
-        console.log(cource?.lectures)
+
         const lecture = cource?.lectures;
-        console.log('lecture', lecture)
 
 
         const data = lecture.filter(ele => {
             return ele._id == lectureId
         })
-
-        console.log('data', data)
+        console.log(name)
+        const date = new Date()
         const x = {
-            studentId: "hello",
-            comment: comment
+            studentName: name,
+            comment: comment,
         }
         data[0].comments.push(x)
-
-        console.log("After push the comment", data)
         cource.save()
         res.status(200).json({
             success: true,

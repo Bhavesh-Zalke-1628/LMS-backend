@@ -38,8 +38,10 @@ router.route('/:id')
         addLectureToCourceById,
     )
 
-    router.route('/:id/comment/:lectureId')
-        .post(addComment)
+router.route('/:id/comment/:lectureId')
+    .post(
+        isLoggedIn, 
+        addComment)
 export default router;
 
 

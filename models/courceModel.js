@@ -44,9 +44,10 @@ const courceSchema = new Schema({
             },
             comments: [
                 {
-                    studentId: String,
-                    comment: String
-                }
+                    studentName: String,
+                    comment: String,
+                    date: String
+                },
             ]
         }
     ],

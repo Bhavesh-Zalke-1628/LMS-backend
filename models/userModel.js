@@ -67,6 +67,7 @@ userSchema.methods.generateJwttoken = async function () {
     return await jwt.sign(
         {
             id: this._id,
+            name: this.fullname,
             email: this.email,
             role: this.role,
             subscription: this.subscription
