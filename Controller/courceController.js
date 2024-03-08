@@ -146,7 +146,8 @@ const addLectureToCourceById = async (req, res, next) => {
         if (!cource) {
             return next(new Apperror("Cource with given id does not exist", 404))
         }
-
+        
+        console.log('hello')
         const lectureData = {
             title,
             description,
@@ -162,11 +163,12 @@ const addLectureToCourceById = async (req, res, next) => {
             try {
                 const result = await cloudnary.v2.uploader.upload(req.file.path, {
                     folder: "avatars",
-                    resource_type: 'auto',
+                    resource_type: 'video',
+                    allowed_formats: ['mp4', 'avi'],
                 })
                 if (result) {
                     lectureData.lecture.public_id = result.public_id
-                    lectureData.lecture.secure_url = result.secure_urlF
+                    lectureData.lecture.secure_url = result.secure_url
                     // remove the file from the local server 
                     fs.rm(`uploads/${req.file.filename}`)
                 }

@@ -41,11 +41,12 @@ const register = async (req, res, next) => {
         if (!user) {
             return next(new Apperror("User registration Failed", 400))
         }
+
         // Upload the avatar Image
 
         console.log(req.file)
         if (req.file) {
-            try {
+            try {   
                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
                     folder: "avatars",
                     width: 150,
@@ -84,6 +85,7 @@ const register = async (req, res, next) => {
         })
     }
 }
+
 const login = async (req, res, next) => {
     const { email, password } = req.body
     try {
