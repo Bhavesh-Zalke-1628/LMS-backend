@@ -26,7 +26,6 @@ const getLectureByCourceId = async (req, res, next) => {
 
         const { id } = req.params;
         const cource = await Cource.findById(id);
-        console.log(id)
 
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
@@ -55,8 +54,8 @@ const createCource = async (req, res, next) => {
             categeory,
             createdBy,
             thumbnails: {
-                public_id: "sample id",
-                secure_url: "sample url"
+                public_id: "",
+                secure_url: ""
             }
         })
         if (!cource) {
@@ -157,25 +156,25 @@ const addLectureToCourceById = async (req, res, next) => {
             }
         }
 
-        // if (req.file) {
-        console.log(req.file)
-        // try {
-        const result = await cloudnary.v2.uploader.upload(req.file, {
-            folder: "Lecture data",
-            resource_type: 'video',
-            chunk_size: "600000"
-        })
-        console.log(result)
-        if (result) {
-            lectureData.lecture.public_id = result.public_id
-            lectureData.lecture.secure_url = result.secure_url
-            // remove the file from the local server 
-            fs.rm(`uploads/${req.file.filename}`)
+
+        console.log('req.file', req.file)
+        if (req.file) {
+            try {
+                const result = await cloudnary.v2.uploader.upload(req.file.path, {
+                    folder: "avatars",
+                    resource_type: 'auto',
+                })
+                if (result) {
+                    lectureData.lecture.public_id = result.public_id
+                    lectureData.lecture.secure_url = result.secure_urlF
+                    // remove the file from the local server 
+                    fs.rm(`uploads/${req.file.filename}`)
+                }
+            } catch (error) {
+                return next(new Apperror("Image upload failed" || error, 500))
+            }
         }
-        // } catch (error) {
-        //     return next(new Apperror("Image upload failed" || error, 500))
-        // }
-        // }
+
 
         //added lecture it is 
         cource.lectures.push(lectureData);
@@ -196,18 +195,14 @@ const addLectureToCourceById = async (req, res, next) => {
 
 
 const addComment = async (req, res, next) => {
-    // console.log('hello')
     const { comment } = req.body
     const name = req.user.name
     try {
-
-        console.log(name)
         const { id, lectureId } = req.params;
         const cource = await Cource.findById(id);
 
         // const student = await User.findById(userId)
 
-        // console.log('student', student)
 
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
@@ -215,11 +210,9 @@ const addComment = async (req, res, next) => {
 
         const lecture = cource?.lectures;
 
-
         const data = lecture.filter(ele => {
             return ele._id == lectureId
         })
-        console.log(name)
         const date = new Date()
         const x = {
             studentName: name,

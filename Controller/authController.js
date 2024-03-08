@@ -43,8 +43,8 @@ const register = async (req, res, next) => {
         }
         // Upload the avatar Image
 
+        console.log(req.file)
         if (req.file) {
-            console.log(req.file)
             try {
                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
                     folder: "avatars",
@@ -225,9 +225,7 @@ const updateUser = async (req, res, next) => {
         const { fullname } = req.body;
         const { id } = req.params
         const userid = id.toString()
-        console.log('user id>', userid)
         const user = await User.findById(userid);
-        console.log(req.user)
         if (!user) {
             return next(new Apperror("User does not exist", 400));
         }
