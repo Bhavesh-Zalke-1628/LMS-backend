@@ -41,6 +41,53 @@ const getLectureByCourceId = async (req, res, next) => {
     }
 }
 
+// const createCource = async (req, res, next) => {
+//     const { title, description, categeory, createdBy } = req.body;
+//     try {
+//         if (!title || !description || !categeory || !createdBy) {
+//             return next(new Apperror("All fields are required", 400))
+//         }
+//         const cource = await Cource.create({
+//             title,
+//             description,
+//             categeory,
+//             createdBy,
+//             thumbnails: {
+//                 public_id: "",
+//                 secure_url: ""
+//             }
+//         })
+//         if (!cource) {
+//             return next(
+//                 new Apperror("Cource Couldn't be created", 401)
+//             )
+//         }
+//         if (req.file) {
+//             const result = await cloudnary.v2.uploader.upload(req.file.path, {
+//                 folder: "Cources",
+//             });
+//             if (result) {
+//                 .thumbnails.public_id = result.public_id;
+//                 cource.thumbnails.secure_url = result.secure_url;
+//             }
+//             console.log(result)
+//             //remvove the file from local server
+//             fs.rm(`uploads/${req.file.filename}`)
+//         }
+//         await cource.save();
+//         res.status(200).json({
+//             success: true,
+//             msg: " Cource created successfully",
+//             cource,
+//         })
+//     } catch (error) {
+//         console.log(error)
+//         return next(new Apperror(error, 500))
+//     }
+// }
+
+
+
 const createCource = async (req, res, next) => {
     const { title, description, categeory, createdBy } = req.body;
 
@@ -54,16 +101,20 @@ const createCource = async (req, res, next) => {
             categeory,
             createdBy,
             thumbnails: {
-                public_id: "",
-                secure_url: ""
+                public_id: "sample id",
+                secure_url: "sample url"
             }
         })
+
+
         if (!cource) {
             return next(
                 new Apperror("Cource Couldn't be created", 401)
             )
         }
+
         if (req.file) {
+            console.log(req.file)
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "Cources",
             });
@@ -71,9 +122,11 @@ const createCource = async (req, res, next) => {
                 cource.thumbnails.public_id = result.public_id;
                 cource.thumbnails.secure_url = result.secure_url;
             }
+
             //remvove the file from local server
             fs.rm(`uploads/${req.file.filename}`)
         }
+
         await cource.save();
         res.status(200).json({
             success: true,
@@ -84,8 +137,8 @@ const createCource = async (req, res, next) => {
         console.log(error)
         return next(new Apperror(error, 500))
     }
-}
 
+}
 const updateCource = async (req, res, next) => {
     const { id } = req.params;
     try {
@@ -132,6 +185,7 @@ const removeCource = async (req, res, next) => {
 }
 
 const addLectureToCourceById = async (req, res, next) => {
+    console.log('helo')
     const { title, description } = req.body;
     const { id } = req.params;
     console.log(title, description)
@@ -142,11 +196,10 @@ const addLectureToCourceById = async (req, res, next) => {
         }
         const cource = await Cource.findById(id);
 
-        console.log(cource)
         if (!cource) {
             return next(new Apperror("Cource with given id does not exist", 404))
         }
-        
+
         console.log('hello')
         const lectureData = {
             title,
@@ -157,26 +210,27 @@ const addLectureToCourceById = async (req, res, next) => {
             }
         }
 
-
-        console.log('req.file', req.file)
-        if (req.file) {
-            try {
-                const result = await cloudnary.v2.uploader.upload(req.file.path, {
-                    folder: "avatars",
-                    resource_type: 'video',
-                    allowed_formats: ['mp4', 'avi'],
-                })
-                if (result) {
-                    lectureData.lecture.public_id = result.public_id
-                    lectureData.lecture.secure_url = result.secure_url
-                    // remove the file from the local server 
-                    fs.rm(`uploads/${req.file.filename}`)
+        async function uploadLecture(filePath) {
+            console.log('filePath', filePath)
+            if (filePath) {
+                console.log(filePath)
+                try {
+                    const result = await cloudnary.v2.uploader.upload(filePath.path, {
+                        folder: "avatars",
+                        resource_type: 'video',
+                    })
+                    if (result) {
+                        lectureData.lecture.public_id = result.public_id
+                        lectureData.lecture.secure_url = result.secure_url
+                    }  
+                } catch (error) {
+                    return next(new Apperror("Image upload failed" || error, 500))
                 }
-            } catch (error) {
-                return next(new Apperror("Image upload failed" || error, 500))
             }
-        }
 
+        }
+        console.log(req.file)
+        uploadLecture(req.file)
 
         //added lecture it is 
         cource.lectures.push(lectureData);
