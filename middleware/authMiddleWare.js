@@ -6,9 +6,10 @@ const isLoggedIn = async (req, res, next) => {
     if (!token) {
         return next(new Apperror("unauthenticated ,Please log in again", 400))
     }
-
     const userDetails = await jwt.verify(token, process.env.SECRET)
+    console.log(userDetails)
     req.user = userDetails
+
     next()
 }
 

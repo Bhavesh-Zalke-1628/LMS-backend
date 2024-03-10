@@ -40,7 +40,6 @@ router.route('/:id')
 
 router.route('/:id/comment/:lectureId')
     .post(
-        
         addComment)
 export default router;
 

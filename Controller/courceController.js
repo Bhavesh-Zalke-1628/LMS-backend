@@ -114,9 +114,9 @@ const createCource = async (req, res, next) => {
         }
 
         if (req.file) {
-            console.log(req.file)
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "Cources",
+
             });
             if (result) {
                 cource.thumbnails.public_id = result.public_id;
@@ -218,11 +218,13 @@ const addLectureToCourceById = async (req, res, next) => {
                     const result = await cloudnary.v2.uploader.upload(filePath.path, {
                         folder: "avatars",
                         resource_type: 'video',
+                        allowed_formats: ['mp4', 'auto']
                     })
                     if (result) {
                         lectureData.lecture.public_id = result.public_id
                         lectureData.lecture.secure_url = result.secure_url
-                    }  
+                    }
+
                 } catch (error) {
                     return next(new Apperror("Image upload failed" || error, 500))
                 }
@@ -251,29 +253,29 @@ const addLectureToCourceById = async (req, res, next) => {
 
 
 const addComment = async (req, res, next) => {
-    const { comment } = req.body
-    const name = req.user.name
+    const bodyData = req.body
+    const { id, lectureId } = req.params;
     try {
-        const { id, lectureId } = req.params;
+        // console.log(comment)
+        console.log(id, lectureId)
+
         const cource = await Cource.findById(id);
-
-        // const student = await User.findById(userId)
-
-
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
         }
 
         const lecture = cource?.lectures;
-
         const data = lecture.filter(ele => {
             return ele._id == lectureId
         })
-        const date = new Date()
+
+        console.log(bodyData)
+        // const date = new Date()
         const x = {
-            studentName: name,
-            comment: comment,
+            studentName: bodyData[1],
+            comment: bodyData[0],
         }
+        console.log(data)
         data[0].comments.push(x)
         cource.save()
         res.status(200).json({
