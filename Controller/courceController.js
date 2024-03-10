@@ -258,7 +258,12 @@ const addComment = async (req, res, next) => {
     try {
         // console.log(comment)
         console.log(id, lectureId)
+        const date = new Date
 
+        const divs = date.getDate()
+        const mahina = date.getMonth() + 1
+        const varsh = date.getFullYear()
+        const time = `${divs}/${mahina}/${varsh}`
         const cource = await Cource.findById(id);
         if (!cource) {
             return next(new Apperror("Cource not found", 404))
@@ -269,11 +274,12 @@ const addComment = async (req, res, next) => {
             return ele._id == lectureId
         })
 
-        console.log(bodyData)
-        // const date = new Date()
+
         const x = {
             studentName: bodyData[1],
             comment: bodyData[0],
+            date: time,
+            photo : bodyData[2]
         }
         console.log(data)
         data[0].comments.push(x)
