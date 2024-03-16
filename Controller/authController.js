@@ -46,7 +46,7 @@ const register = async (req, res, next) => {
 
         console.log(req.file)
         if (req.file) {
-            try {   
+            try {
                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
                     folder: "avatars",
                     width: 150,
@@ -138,6 +138,7 @@ const getProfile = async (req, res, next) => {
 
 const forgotPassword = async (req, res, next) => {
     const { email } = req.body
+    console.log(email)
     if (!email) {
         return next(new Apperror("Email is required", 400))
     }
@@ -166,6 +167,7 @@ const forgotPassword = async (req, res, next) => {
         return next(new Apperror(error, 500))
     }
 }
+
 const resetPassword = async (req, res, next) => {
     const { resetToken } = req.params;
     const { password } = req.body
@@ -194,9 +196,13 @@ const resetPassword = async (req, res, next) => {
         user
     })
 }
+
 const changePassword = async (req, res, next) => {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body
     const { id } = req.user;
+    console.log(id)
+    console.log('oldPassword', oldPassword,
+        'newPassword', newPassword)
 
     if (!oldPassword || !newPassword) {
         return next(new Apperror("All fileed are required", 400));
@@ -207,14 +213,18 @@ const changePassword = async (req, res, next) => {
         return next(new Apperror("User does not exist", 400));
 
     }
-
+    console.log(
+        user
+    )
     const isPasswordValid = await user.comparedPassword(oldPassword);
+    console.log(isPasswordValid)
     if (!isPasswordValid) {
         return next(new Apperror("invalid Old password", 400));
     }
 
     user.password = newPassword
 
+    console.log(user.password)
     user.password = undefined
 
     res.status(200).json({
@@ -222,6 +232,8 @@ const changePassword = async (req, res, next) => {
         msg: "Password change successfully"
     })
 }
+
+
 const updateUser = async (req, res, next) => {
     try {
         const { fullname } = req.body;

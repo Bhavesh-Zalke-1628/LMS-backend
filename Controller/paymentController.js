@@ -70,7 +70,6 @@ const verifySbscription = async (req, res, next) => {
     console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {
         const user = await User.findById(id)
-        console.log(razorpay_payment_id)
         if (!user) {
             return next(
                 new Apperror("Unauthroised , Please log in", 400)
@@ -86,17 +85,18 @@ const verifySbscription = async (req, res, next) => {
             .digest('hex')
 
         console.log('generatedSignature >', generatedSignature)
-        // if (generatedSignature !== razorpay_signature) {
-        //     return next(new Apperror("Payment not verified please try again", 400))
-        // }
+        if (generatedSignature !== razorpay_signature) {
+            return next(new Apperror("Payment not verified please try again", 400))
+        }
         await Payment.create({
             razorpay_payment_id,
             razorpay_signature,
             razorpay_subscription_id
         })
 
-
+        console.log(user?.subscription)
         user.subscription.status = 'active'
+        console.log(user?.subscription)
         console.log(user)
         await user.save()
         res.status(200).json({

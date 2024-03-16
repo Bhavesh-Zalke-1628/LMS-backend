@@ -41,53 +41,6 @@ const getLectureByCourceId = async (req, res, next) => {
     }
 }
 
-// const createCource = async (req, res, next) => {
-//     const { title, description, categeory, createdBy } = req.body;
-//     try {
-//         if (!title || !description || !categeory || !createdBy) {
-//             return next(new Apperror("All fields are required", 400))
-//         }
-//         const cource = await Cource.create({
-//             title,
-//             description,
-//             categeory,
-//             createdBy,
-//             thumbnails: {
-//                 public_id: "",
-//                 secure_url: ""
-//             }
-//         })
-//         if (!cource) {
-//             return next(
-//                 new Apperror("Cource Couldn't be created", 401)
-//             )
-//         }
-//         if (req.file) {
-//             const result = await cloudnary.v2.uploader.upload(req.file.path, {
-//                 folder: "Cources",
-//             });
-//             if (result) {
-//                 .thumbnails.public_id = result.public_id;
-//                 cource.thumbnails.secure_url = result.secure_url;
-//             }
-//             console.log(result)
-//             //remvove the file from local server
-//             fs.rm(`uploads/${req.file.filename}`)
-//         }
-//         await cource.save();
-//         res.status(200).json({
-//             success: true,
-//             msg: " Cource created successfully",
-//             cource,
-//         })
-//     } catch (error) {
-//         console.log(error)
-//         return next(new Apperror(error, 500))
-//     }
-// }
-
-
-
 const createCource = async (req, res, next) => {
     const { title, description, categeory, createdBy } = req.body;
 
@@ -216,7 +169,7 @@ const addLectureToCourceById = async (req, res, next) => {
                 console.log(filePath)
                 try {
                     const result = await cloudnary.v2.uploader.upload(filePath.path, {
-                        folder: "avatars",
+                        folder: "lectures",
                         resource_type: 'video',
                         allowed_formats: ['mp4', 'auto']
                     })
@@ -279,7 +232,7 @@ const addComment = async (req, res, next) => {
             studentName: bodyData[1],
             comment: bodyData[0],
             date: time,
-            photo : bodyData[2]
+            photo: bodyData[2]
         }
         console.log(data)
         data[0].comments.push(x)
