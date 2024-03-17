@@ -28,7 +28,6 @@ router
     .post(
         isLoggedIn,
         authorisedSubscriber,
-        isLoggedIn,
         cancleSubscription
     )
 

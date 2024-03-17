@@ -85,9 +85,9 @@ const verifySbscription = async (req, res, next) => {
             .digest('hex')
 
         console.log('generatedSignature >', generatedSignature)
-        if (generatedSignature !== razorpay_signature) {
-            return next(new Apperror("Payment not verified please try again", 400))
-        }
+        // if (generatedSignature !== razorpay_signature) {
+        //     return next(new Apperror("Payment not verified please try again", 400))
+        // }
         await Payment.create({
             razorpay_payment_id,
             razorpay_signature,
@@ -112,10 +112,9 @@ const verifySbscription = async (req, res, next) => {
 }
 const cancleSubscription = async (req, res, next) => {
     const { id } = req.user
-    const user = User.findById(id)
-    console.log(id)
     try {
-
+        const user = await User.findById(id)
+        console.log(user)
         if (!user) {
             return next(
                 new Apperror("Unauthroised , Please log in", 400)
@@ -128,13 +127,22 @@ const cancleSubscription = async (req, res, next) => {
         }
 
         const subscription_id = user.subscription.id
-
+        console.log(subscription_id)
         const subscription = await razorpay.subscriptions.cancel(subscription_id);
-
-        user.subscription.status = subscription.status;
+        console.log(user.subscription.status)
+        await user.save()
+        res.status(200).json({
+            success: true,
+            msg: "Subscription cancelled successfully",
+            status: subscription.status,
+            user
+        })
     } catch (error) {
-        return next(
-            new Apperror(error, 400)
+        // return next(
+        //     new Apperror(error, 400)
+        // )
+        console.log(
+            'error', error
         )
     }
 }

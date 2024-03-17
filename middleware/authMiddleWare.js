@@ -24,11 +24,10 @@ const authorisedRoles = (...roles) => async (req, res, next) => {
 
 
 const authorisedSubscriber = async (req, res, next) => {
-    console.log(req.user)
     const user = await User.findById(req.user.id)
-    console.log(user)
     console.log('authorisedSubscriber user >', user)
-    if (user.role == 'User' || user.subscription.status == 'active') {
+    // console.log(user.subscription.id)
+    if (user.role !== 'Admin' && user.subscription.status !== 'active') {
         return next(
             new Apperror('Plase subscribe to access this cource ', 400)
         );
