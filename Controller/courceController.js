@@ -42,6 +42,7 @@ const getLectureByCourceId = async (req, res, next) => {
 }
 
 const createCource = async (req, res, next) => {
+
     const { title, description, categeory, createdBy } = req.body;
 
     try {
@@ -71,6 +72,7 @@ const createCource = async (req, res, next) => {
                 folder: "Cources",
 
             });
+            console.log(result)
             if (result) {
                 cource.thumbnails.public_id = result.public_id;
                 cource.thumbnails.secure_url = result.secure_url;
@@ -92,6 +94,7 @@ const createCource = async (req, res, next) => {
     }
 
 }
+
 const updateCource = async (req, res, next) => {
     const { id } = req.params;
     try {
@@ -105,7 +108,7 @@ const updateCource = async (req, res, next) => {
             }
         )
         if (!cource) {
-            return next(new Aprror("Cource with given id does not exist", 404))
+            return next(new Apperror("Cource with given id does not exist", 404))
         }
 
         res.status(200).json({
@@ -159,7 +162,7 @@ const addLectureToCourceById = async (req, res, next) => {
             description,
             lecture: {
                 public_id: "public id",
-                secure_url: "sample id"
+                secure_url: "https://res.cloudinary.com/dnjforhdj/video/upload/v1710049711/avatars/crvjvwdjkcddlcp2iecj.mp4"
             }
         }
 
@@ -175,7 +178,7 @@ const addLectureToCourceById = async (req, res, next) => {
                     })
                     if (result) {
                         lectureData.lecture.public_id = result.public_id
-                        lectureData.lecture.secure_url = result.secure_url
+                        lectureData.lecture.secure_url = "https://res.cloudinary.com/dnjforhdj/video/upload/v1710049711/avatars/crvjvwdjkcddlcp2iecj.mp4"
                     }
 
                 } catch (error) {
@@ -204,6 +207,34 @@ const addLectureToCourceById = async (req, res, next) => {
     }
 }
 
+const deleteLecture = async (req, res, next) => {
+    const { courseId, lectureId } = req.query
+    try {
+        console.log(courseId, lectureId)
+        const cource = await Cource.findById(courseId)
+
+        if (!cource) {
+            return next(
+                new Apperror("Cource not found", 400)
+            )
+        }
+
+        const x = cource.lectures.filter((ele) => {
+            return ele._id == lectureId
+        })
+
+        console.log(x[0])
+        x[0].deleteOne()
+        cource.save()
+        res.status(200).json({
+            success: true,
+            msg: "Delete lecture successfuly",
+            cource
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const addComment = async (req, res, next) => {
     const bodyData = req.body
@@ -249,6 +280,19 @@ const addComment = async (req, res, next) => {
         })
     }
 }
+
+const deleteComment = async (req, res, next) => {
+    try {
+        res.status(400).json({
+            success: true,
+            msg: "Commen delete successfully",
+        })
+    } catch (error) {
+        next(
+            new Apperror(error, 400)
+        )
+    }
+}
 export {
     getAllCources,
     getLectureByCourceId,
@@ -256,5 +300,7 @@ export {
     updateCource,
     removeCource,
     addLectureToCourceById,
-    addComment
+    deleteLecture,
+    addComment,
+    deleteComment
 }
