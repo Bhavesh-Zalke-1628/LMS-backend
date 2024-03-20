@@ -125,16 +125,15 @@ const cancleSubscription = async (req, res, next) => {
                 new Apperror("Admin cannot purchase the subscription", 400)
             );
         }
-
         const subscription_id = user.subscription.id
         console.log(subscription_id)
         const subscription = await razorpay.subscriptions.cancel(subscription_id);
-        console.log(user.subscription.status)
+        console.log(subscription.status)
+        user.subscription.status = subscription.status
         await user.save()
         res.status(200).json({
             success: true,
             msg: "Subscription cancelled successfully",
-            status: subscription.status,
             user
         })
     } catch (error) {
@@ -155,11 +154,48 @@ const allPayment = async (req, res, next) => {
         const payments = await razorpay.subscriptions.all({
             count: count || 10
         })
+        let allPayments = 0;
+        let finalMonthPayment = 0;
+        const monthlySalesRecord = {};
+
+        // Iterate through each payment record
+        payments.items.forEach(payment => {
+            console.log(payment.length)
+            // Extract relevant information from the payment record
+            const amount = payment.paid_count; // Assuming amount is a key in each payment record
+            console.log(amount)
+            const date = new Date(payment.created_at); // Assuming timestamp is a key in each payment record
+            console.log(date)
+            // Aggregate all payments
+            allPayments += amount;
+
+            // Calculate final month payment
+            const paymentMonth = date.getMonth();
+            const currentMonth = new Date().getMonth();
+            if (paymentMonth === currentMonth) {
+                finalMonthPayment += amount;
+            }
+
+            // Create or update monthly sales record
+            const monthKey = `${date.getFullYear()}-${paymentMonth + 1}`; // +1 because getMonth() returns zero-based index
+            if (monthlySalesRecord[monthKey]) {
+                monthlySalesRecord[monthKey] += amount;
+            } else {
+                monthlySalesRecord[monthKey] = amount;
+            }
+        });
+
+        // Output the results
+        console.log("All Payments:", allPayments);
+        console.log("Final Month Payment:", finalMonthPayment);
+        console.log("Monthly Sales Record:", monthlySalesRecord);
+
+
 
         res.status(200).json({
             success: true,
             msg: "All payments",
-            data: payments.items
+            data: payments
         })
     } catch (error) {
         return next(

@@ -34,9 +34,9 @@ router
 router
     .route('/')
     .get(
-        isLoggedIn,
+        // isLoggedIn,
         // authorisedRoles('Admin'),
-        authorisedSubscriber,
+        // authorisedSubscriber,
         allPayment
     )
 

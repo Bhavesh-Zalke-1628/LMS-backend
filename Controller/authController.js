@@ -101,6 +101,7 @@ const login = async (req, res, next) => {
         const token = await user.generateJwttoken();
         user.password = undefined
         res.cookie('token', token, cookieOption)
+        user.save()
         res.status(200).json({
             success: true,
             msg: "User logged in successfully",

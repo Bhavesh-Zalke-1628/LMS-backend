@@ -12,7 +12,7 @@ import { authorisedRoles, isLoggedIn } from "../middleware/authMiddleWare.js";
 router.route('/')
     .get(getAllCources)
     .post(
-        isLoggedIn,
+        // isLoggedIn,
         upload.single('thumbnails'),
         createCource
     )
@@ -40,7 +40,7 @@ router.route('/:id')
 
 router.route('/')
     .delete(
-        // isLoggedIn,
+        isLoggedIn,
         // authorisedRoles('Admin'),
         deleteLecture
     )
@@ -50,7 +50,7 @@ router.route('/')
 // commnet area 
 router.route('/:id/comment/:lectureId')
     .post(
-        isLoggedIn,
+        // isLoggedIn,
         addComment
     )
 

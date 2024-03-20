@@ -3,6 +3,7 @@ import Apperror from "../utils/erorUtils.js";
 import jwt from 'jsonwebtoken'
 const isLoggedIn = async (req, res, next) => {
     const { token } = req.cookies;
+    console.log(token)
     if (!token) {
         return next(new Apperror("unauthenticated ,Please log in again", 400))
     }
