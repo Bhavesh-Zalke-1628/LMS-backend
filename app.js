@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import authRouter from './Route/authRouter.js'
 import courceRouter from './Route/courceRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
-
+import contactRouter from './Route/contactRouter.js'
 // parsing the data is present in the database
 app.use(express.json());
 
@@ -37,8 +37,8 @@ app.use('/api/auth', authRouter)
 app.use('/api/cource', courceRouter)
 // PaymentRoute 
 app.use('/api/payment', paymentRouter)
-
-
+// ContactRoute
+app.use('/api/contact', contactRouter)
 
 app.get('/ping', (req, res) => {
     res.status(200).json({
