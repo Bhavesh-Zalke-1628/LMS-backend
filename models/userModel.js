@@ -20,9 +20,7 @@ const userSchema = new Schema({
         lowercase: true,
     },
     password: {
-        type: "String",
-        required: true,
-        select: false,
+        type: String,
         maxLenght: [8, "Name must be atleast 8 character"],
     },
     avatar: {
@@ -52,15 +50,23 @@ const userSchema = new Schema({
 
 // ecnrypt the password
 
+// userSchema.pre('save', async function (next) {
+//     if (!this.isModified('password')) {
+//         return next();
+//     }
+//     const user = this;
+//     const saltValue = await bcrypt.genSalt(10);
+//     console.log(user)
+//     user.password = await bcrypt.hash(user.password, saltValue)
+// })
+
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
     }
-    const user = this;
-    const saltValue = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, saltValue)
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
 })
-
 
 // JWT Token
 userSchema.methods.generateJwttoken = async function () {

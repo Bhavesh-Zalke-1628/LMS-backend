@@ -44,7 +44,7 @@ const getLectureByCourceId = async (req, res, next) => {
 const createCource = async (req, res, next) => {
 
     const { title, description, categeory, createdBy } = req.body;
-
+    console.log(title, description, description, categeory)
     try {
         if (!title || !description || !categeory || !createdBy) {
             return next(new Apperror("All fields are required", 400))
@@ -66,7 +66,7 @@ const createCource = async (req, res, next) => {
                 new Apperror("Cource Couldn't be created", 401)
             )
         }
-
+        console.log(req.file)
         if (req.file) {
             const result = await cloudnary.v2.uploader.upload(req.file.path, {
                 folder: "Cources",
@@ -265,13 +265,14 @@ const addComment = async (req, res, next) => {
             date: time,
             photo: bodyData[2]
         }
-        console.log(data)
+        const commentData = Cource
+        console.log(commentData)
         data[0].comments.push(x)
         cource.save()
         res.status(200).json({
             success: true,
             msg: "Comment add successfully",
-            cource
+            data: commentData
         })
     } catch (error) {
         res.status(400).json({

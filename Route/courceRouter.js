@@ -55,7 +55,7 @@ router.route('/:id/comment/:lectureId')
     )
 
 router.route('/delete-comment')
-    .get(
+    .delete(
         isLoggedIn,
         deleteComment
     )

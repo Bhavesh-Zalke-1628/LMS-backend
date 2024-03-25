@@ -5,7 +5,7 @@ import cloudnary from 'cloudinary'
 import app from './app.js'
 import connectToDb from './config/dbConnection.js'
 import Razorpay from 'razorpay'
-
+import { Server, Socket } from 'socket.io'
 const PORT = process.env.PORT || 3000
 
 cloudnary.v2.config({
@@ -17,6 +17,12 @@ cloudnary.v2.config({
 export const razorpay = new Razorpay({
     key_id: process.env.RazorpayKeyId,
     key_secret: process.env.key_secret
+})
+
+const io = new Server(8000)
+
+io.on("Connection", (socket) => {
+    console.log(`Socket connected`, socket.id)
 })
 
 app.listen(PORT, async () => {
