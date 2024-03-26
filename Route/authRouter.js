@@ -3,12 +3,12 @@ import { Router } from "express";
 const router = Router()
 
 // import the files 
-import { register, login, logout, getProfile, forgotPassword, resetPassword, changePassword, updateUser } from '../Controller/authController.js'
+import { logout, getProfile, forgotPassword, resetPassword, changePassword, updateUser, loginUser, registerUser } from '../Controller/authController.js'
 import upload from '../middleware/multerMiddle.js'
 import { isLoggedIn } from "../middleware/authMiddleWare.js";
 
-router.route('/register').post(upload.single('avatar'), register);
-router.route('/login').post(login);
+router.route('/register').post(upload.single('avatar'), registerUser);
+router.route('/login/user').post(loginUser);
 router.route('/logout').get(logout);
 router.route('/me').get(isLoggedIn, getProfile);
 router.post('/reset', forgotPassword);

@@ -16,7 +16,7 @@ const cookieOption = {
     maxAge: 7 * 24 * 60 * 1000, //for the 7 days login token
     secure: true
 }
-const register = async (req, res, next) => {
+const registerUser = async (req, res, next) => {
     const { fullname, email, password } = req.body
     try {
         if (!fullname || !email || !password) {
@@ -85,8 +85,76 @@ const register = async (req, res, next) => {
         })
     }
 }
+// const registerAdmin = async (req, res, next) => {
+//     const { fullname, email, password } = req.body
+//     console.log(fullname, email, password)
+//     try {
+//         if (!fullname || !email || !password) {
+//             return next(new Apperror('All fields are required', 400))
+//         }
 
-const login = async (req, res, next) => {
+//         const userExist = await User.findOne({ email })
+//         if (userExist) {
+//             return next(new Apperror("Email already exist", 400))
+//         }
+
+//         const user = await User.create({
+//             email,
+//             fullname,
+//             password,
+//             avatar: {
+//                 public_id: "",
+//                 secure_url: ""
+//             }
+//         })
+
+//         user.role = "Admin"
+//         await user.save()
+//         console.log('created admin', user)
+
+//         // Upload the avatar Image
+//         console.log(req.file)
+//         if (req.file) {
+//             try {
+//                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
+//                     folder: "avatars",
+//                     width: 150,
+//                     height: 150,
+//                     crop: "fill",
+//                     gravity: "faces",
+//                 })
+//                 if (result) {
+//                     user.avatar.public_id = result.public_id
+//                     user.avatar.secure_url = result.secure_url
+
+//                     // remove the file from the local server 
+//                     fs.rm(`uploads/${req.file.filename}`)
+//                 }
+//             } catch (error) {
+//                 return next(new Apperror("Image upload failed" || error, 500))
+//             }
+//         }
+
+//         await user.save()
+//         const token = await user.generateJwttoken();
+//         user.password = undefined
+//         res.cookie('token', token, cookieOption)
+//         console.log('user save', user)
+//         res.status(200).json({
+//             success: true,
+//             msg: "User registered successfully",
+//             user
+//         })
+//     }
+//     catch (error) {
+//         res.status(400).json({
+//             success: false,
+//             msg: "User registration failed"
+//         })
+//     }
+// }
+
+const loginUser = async (req, res, next) => {
     const { email, password } = req.body
     try {
         if (!email || !password) {
@@ -101,6 +169,7 @@ const login = async (req, res, next) => {
         const token = await user.generateJwttoken();
         user.password = undefined
         res.cookie('token', token, cookieOption)
+        user.role = 'User'
         user.save()
         res.status(200).json({
             success: true,
@@ -279,8 +348,8 @@ const updateUser = async (req, res, next) => {
     }
 }
 export {
-    register,
-    login,
+    registerUser,
+    loginUser,
     logout,
     getProfile,
     forgotPassword,

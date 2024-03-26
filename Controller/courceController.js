@@ -282,18 +282,6 @@ const addComment = async (req, res, next) => {
     }
 }
 
-const deleteComment = async (req, res, next) => {
-    try {
-        res.status(400).json({
-            success: true,
-            msg: "Commen delete successfully",
-        })
-    } catch (error) {
-        next(
-            new Apperror(error, 400)
-        )
-    }
-}
 export {
     getAllCources,
     getLectureByCourceId,
@@ -303,5 +291,4 @@ export {
     addLectureToCourceById,
     deleteLecture,
     addComment,
-    deleteComment
 }

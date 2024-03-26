@@ -4,7 +4,7 @@ const router = Router();
 
 
 // import the controller
-import { getAllCources, getLectureByCourceId, createCource, updateCource, removeCource, addLectureToCourceById, addComment, deleteComment, deleteLecture } from '../Controller/courceController.js'
+import { getAllCources, getLectureByCourceId, createCource, updateCource, removeCource, addLectureToCourceById, addComment, deleteLecture } from '../Controller/courceController.js'
 import upload from '../middleware/multerMiddle.js'
 import { authorisedRoles, isLoggedIn } from "../middleware/authMiddleWare.js";
 
@@ -54,11 +54,6 @@ router.route('/:id/comment/:lectureId')
         addComment
     )
 
-router.route('/delete-comment')
-    .delete(
-        isLoggedIn,
-        deleteComment
-    )
 
 export default router;
 

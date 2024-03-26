@@ -20,7 +20,9 @@ const userSchema = new Schema({
         lowercase: true,
     },
     password: {
-        type: String,
+        type: "String",
+        required: true,
+        select: false,
         maxLenght: [8, "Name must be atleast 8 character"],
     },
     avatar: {
@@ -34,7 +36,7 @@ const userSchema = new Schema({
     role: {
         type: String,
         enum: ['User', 'Admin'],
-        default: 'User',
+        default: "User"
     },
     forgotPasswordToken: String,
     forgotPasswordExpiry: Date,
@@ -49,31 +51,19 @@ const userSchema = new Schema({
 )
 
 // ecnrypt the password
-
-// userSchema.pre('save', async function (next) {
-//     if (!this.isModified('password')) {
-//         return next();
-//     }
-//     const user = this;
-//     const saltValue = await bcrypt.genSalt(10);
-//     console.log(user)
-//     user.password = await bcrypt.hash(user.password, saltValue)
-// })
-
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
-        return next();
+        next()
     }
     this.password = await bcrypt.hash(this.password, 10)
-    next()
-})
+}
+)
 
 // JWT Token
 userSchema.methods.generateJwttoken = async function () {
     return await jwt.sign(
         {
             id: this._id,
-            name: this.fullname,
             email: this.email,
             role: this.role,
             subscription: this.subscription
