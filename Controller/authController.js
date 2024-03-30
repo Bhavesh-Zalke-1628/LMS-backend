@@ -169,7 +169,6 @@ const loginUser = async (req, res, next) => {
         const token = await user.generateJwttoken();
         user.password = undefined
         res.cookie('token', token, cookieOption)
-        user.role = 'User'
         user.save()
         res.status(200).json({
             success: true,
