@@ -191,7 +191,10 @@ const allPayment = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "All payments",
-            data: payments
+            data: payments,
+            allPayment,
+            finalMonthPayment,
+            monthlySalesRecord
         })
     } catch (error) {
         return next(
@@ -200,6 +203,16 @@ const allPayment = async (req, res, next) => {
     }
 }
 
+
+
+const statData = async (req, res, next) => {
+    try {
+    } catch (error) {
+        return next(
+            new Apperror(error, 400)
+        )
+    }
+}
 
 export {
     getRazorpayKey,

@@ -87,6 +87,7 @@ const createCource = async (req, res, next) => {
             success: true,
             msg: " Cource created successfully",
             cource,
+            courceValue: Cource.length
         })
     } catch (error) {
         console.log(error)
